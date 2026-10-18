@@ -1,0 +1,604 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/space-grotesk';
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Space Grotesk Variable', system-ui, -apple-system, sans-serif;
+
+  --color-ink: #120b26;
+  --color-ink-2: #1a1136;
+  --color-panel: #1e1539;
+  --color-panel-2: #251a46;
+  --color-cream: #f7f2e7;
+  --color-muted: #b9b0c9;
+  --color-accent: #f4c469;
+  --color-heat: #f2869a;
+  --color-cool: #b3a4ff;
+  --color-warm: #f7b267;
+  --color-sage: #94d6b8;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+}
+
+@layer components {
+  /* One decorative layer, behind an isolated content layer. Rule from the audit:
+     nothing decorative may paint above flow content. */
+  .sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* Confined to the top band so it can never sit behind reading copy further down. */
+    max-height: 34rem;
+  }
+
+  .sky-base {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(110% 80% at 80% 12%, rgba(246, 173, 133, 0.42), transparent 55%),
+      radial-gradient(80% 70% at 12% 6%, rgba(126, 90, 190, 0.45), transparent 60%),
+      linear-gradient(180deg, #241344 0%, #331c50 26%, #552a55 44%, #8a4059 55%, #b45c5b 62%, #3a1c47 76%, #120b26 92%);
+  }
+
+  /* Keeps every line of hero copy on a dark surface, whatever the sky is doing. */
+  .sky-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        100deg,
+        rgba(18, 11, 38, 0.94) 0%,
+        rgba(18, 11, 38, 0.74) 36%,
+        rgba(18, 11, 38, 0.18) 66%,
+        rgba(18, 11, 38, 0) 100%
+      ),
+      linear-gradient(180deg, rgba(18, 11, 38, 0) 52%, rgba(18, 11, 38, 0.72) 78%, #120b26 96%);
+  }
+
+  @media (max-width: 640px) {
+    .sky-scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(18, 11, 38, 0.45) 0%,
+        rgba(18, 11, 38, 0.7) 38%,
+        rgba(18, 11, 38, 0.92) 68%,
+        #120b26 94%
+      );
+    }
+  }
+
+  .sky-cloud {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(26px);
+    opacity: 0.5;
+    background: radial-gradient(closest-side, rgba(255, 232, 214, 0.85), rgba(255, 232, 214, 0) 100%);
+  }
+
+  /* Decorative constellations, inside the same sky layer as everything else
+     that must never paint over copy. Opacity only: these are absolutely
+     positioned groups whose own transform is set in the SVG. */
+  .constellation-field {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+  }
+
+  .constellation-field svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .constellation {
+    animation: twinkle 9s ease-in-out infinite;
+  }
+
+  .starfield {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.8), transparent 100%),
+      radial-gradient(1.2px 1.2px at 38% 12%, rgba(255, 255, 255, 0.55), transparent 100%),
+      radial-gradient(1.6px 1.6px at 62% 30%, rgba(255, 255, 255, 0.7), transparent 100%),
+      radial-gradient(1.2px 1.2px at 82% 14%, rgba(255, 255, 255, 0.5), transparent 100%),
+      radial-gradient(1.4px 1.4px at 26% 46%, rgba(255, 255, 255, 0.45), transparent 100%),
+      radial-gradient(1.2px 1.2px at 92% 42%, rgba(255, 255, 255, 0.4), transparent 100%);
+  }
+
+  .panel {
+    background: #1e1539;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.85);
+  }
+
+  .panel-quiet {
+    background: #1a1233;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .hairline {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+  }
+
+  .btn-primary {
+    background: var(--color-cream);
+    color: #1a1033;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #fff;
+  }
+
+  .btn-primary:disabled {
+    background: rgba(247, 242, 231, 0.16);
+    color: rgba(247, 242, 231, 0.6);
+    cursor: not-allowed;
+  }
+
+  .btn-quiet {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: var(--color-cream);
+  }
+
+  .btn-quiet:hover {
+    border-color: rgba(244, 196, 105, 0.5);
+    color: var(--color-accent);
+  }
+
+  .field {
+    width: 100%;
+    background: #150e2c;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    padding: 0.95rem 1rem;
+    color: var(--color-cream);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    resize: none;
+  }
+
+  .field::placeholder {
+    color: rgba(247, 242, 231, 0.4);
+  }
+
+  .field:focus-visible {
+    border-color: rgba(244, 196, 105, 0.65);
+    outline-offset: 0;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 36px;
+    padding: 0 0.7rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  /* Legal pages: readable long-form prose on the same dark surface. */
+  .legal-prose {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: rgba(247, 242, 231, 0.78);
+  }
+
+  .legal-prose > :first-child {
+    margin-top: 0;
+  }
+
+  .legal-prose > p:first-child {
+    font-size: 1.0625rem;
+    color: rgba(247, 242, 231, 0.88);
+  }
+
+  .legal-prose h2 {
+    margin-top: 2.25rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-cream);
+  }
+
+  .legal-prose h3 {
+    margin-top: 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-cream);
+  }
+
+  .legal-prose p {
+    margin-top: 0.85rem;
+  }
+
+  .legal-prose ul {
+    margin-top: 0.85rem;
+    padding-left: 1.15rem;
+    list-style: disc;
+  }
+
+  .legal-prose ul li + li {
+    margin-top: 0.55rem;
+  }
+
+  .legal-prose li::marker {
+    color: rgba(244, 196, 105, 0.7);
+  }
+
+  .legal-prose strong {
+    font-weight: 600;
+    color: var(--color-cream);
+  }
+
+  .legal-prose a {
+    color: rgba(247, 242, 231, 0.92);
+    text-decoration: underline;
+    text-decoration-color: rgba(244, 196, 105, 0.5);
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .legal-prose a:hover {
+    color: var(--color-accent);
+  }
+
+  .legal-prose code {
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0.1rem 0.3rem;
+    font-size: 0.8em;
+    overflow-wrap: anywhere;
+  }
+
+  /* Data tables may scroll sideways on narrow screens (WCAG 1.4.10 exempts
+     two-dimensional data), which keeps their headers attached to the values. */
+  .legal-table-scroll {
+    margin-top: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .legal-prose table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+
+  .legal-table-scroll table {
+    margin-top: 0;
+    min-width: 33rem;
+  }
+
+  @media (min-width: 641px) {
+    .legal-table-scroll table {
+      min-width: 0;
+    }
+  }
+
+  .legal-prose caption {
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .legal-prose th,
+  .legal-prose td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    padding: 0.7rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  /* Action buttons keep their label on one line; only identifiers may break. */
+  .legal-prose td:last-child {
+    white-space: nowrap;
+  }
+
+  .legal-prose thead th {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    font-weight: 600;
+  }
+
+  .legal-prose tbody th {
+    font-weight: 600;
+    color: var(--color-cream);
+    min-width: 9rem;
+  }
+
+  .legal-prose tbody th code,
+  .legal-prose td code {
+    display: inline-block;
+    margin-top: 0.25rem;
+    color: rgba(247, 242, 231, 0.62);
+    word-break: break-all;
+  }
+
+  /* Narrow screens: each row becomes a labelled block, so a reader never loses
+     which column a value belongs to and nothing scrolls sideways. The header
+     row stays in the accessibility tree (clipped, not display:none), which is
+     why the cells also carry data-label values the CSS can print. */
+  @media (max-width: 640px) {
+    .legal-table-scroll {
+      overflow-x: visible;
+    }
+
+    .legal-table-scroll table {
+      min-width: 0;
+    }
+
+    .legal-table-scroll thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .legal-table-scroll table,
+    .legal-table-scroll tbody,
+    .legal-table-scroll tr,
+    .legal-table-scroll th,
+    .legal-table-scroll td {
+      display: block;
+      width: auto;
+    }
+
+    .legal-table-scroll tr {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .legal-table-scroll th,
+    .legal-table-scroll td {
+      border-bottom: 0;
+      padding: 0.2rem 0;
+    }
+
+    .legal-table-scroll tbody th {
+      padding-bottom: 0.35rem;
+    }
+
+    .legal-table-scroll td:last-child {
+      white-space: normal;
+      padding-top: 0.6rem;
+    }
+
+    .legal-table-scroll td::before {
+      display: block;
+      margin-bottom: 0.15rem;
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      content: attr(data-label);
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Annotation marks: colour plus a solid underline, so colour is never the only cue. */
+  .mark {
+    display: inline;
+    appearance: none;
+    margin: 0;
+    padding: 0 1px;
+    font: inherit;
+    line-height: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 2px;
+    box-decoration-break: clone;
+    cursor: pointer;
+  }
+
+  .mark[data-kind='heat'] {
+    border-bottom-color: var(--color-heat);
+  }
+
+  .mark[data-kind='demand'] {
+    border-bottom-color: var(--color-warm);
+  }
+
+  .mark[data-kind='volume'] {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .mark[data-kind='absolute'] {
+    border-bottom-color: var(--color-cool);
+  }
+
+  .mark[data-kind='hedge'] {
+    border-bottom-color: #9aa7c7;
+  }
+
+  .mark[data-kind='warmth'] {
+    border-bottom-color: var(--color-sage);
+  }
+
+  .mark[data-kind='play'] {
+    border-bottom-color: #e7a6d0;
+  }
+
+  .mark:hover,
+  .mark:focus-visible,
+  .mark[data-selected='true'] {
+    background: rgba(244, 196, 105, 0.14);
+  }
+
+  [data-swatch][data-kind='heat'] {
+    background: var(--color-heat);
+  }
+  [data-swatch][data-kind='demand'] {
+    background: var(--color-warm);
+  }
+  [data-swatch][data-kind='volume'] {
+    background: var(--color-accent);
+  }
+  [data-swatch][data-kind='absolute'] {
+    background: var(--color-cool);
+  }
+  [data-swatch][data-kind='hedge'] {
+    background: #9aa7c7;
+  }
+  [data-swatch][data-kind='warmth'] {
+    background: var(--color-sage);
+  }
+  [data-swatch][data-kind='play'] {
+    background: #e7a6d0;
+  }
+
+  .diff-add {
+    background: rgba(148, 214, 184, 0.18);
+    color: #d9fff0;
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+
+  .diff-del {
+    color: rgba(242, 134, 154, 0.75);
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    padding: 0 2px;
+  }
+
+  .animate-rise {
+    animation: rise 220ms ease-out both;
+  }
+
+  .animate-pulse-dot {
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-6%, 0, 0);
+  }
+  to {
+    transform: translate3d(6%, 0, 0);
+  }
+}
+
+.cloud-a {
+  animation: drift 26s ease-in-out infinite alternate;
+}
+
+.cloud-b {
+  animation: drift 34s ease-in-out infinite alternate-reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .cloud-a,
+  .cloud-b {
+    animation: none;
+  }
+}
